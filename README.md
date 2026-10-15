@@ -1,27 +1,27 @@
-# My 24/7 Slack Bot (Hosted on Hack Club Nest!)
+# My 24/7 Nest Slack Bot 🚀
 
-Hey there! I built this custom Slack bot for my Stardance project. I mainly wanted to figure out how to keep a coding project running permanently on a server, so I wouldn't have to keep my personal laptop awake all day just to host it. I wrote it in Node.js and hosted it on a Hack Club Nest Linux container.
+Hey! I'm Kavish, and this is my Stardance software project. I built a custom Slack bot using Node.js and the `@slack/bolt` library. The main goal for this project was figuring out how to host a bot 24/7 on a Hack Club Nest server so I wouldn't have to leave my personal laptop running all day.
 
-## What it actually does
-* **Always Awake:** It runs 24/7 in the background of my Nest server, so it never misses a message.
-* **Instant Replies:** It listens for my custom slash commands in Slack and replies instantly.
-* **Socket Mode:** It uses Slack's Socket Mode, meaning it connects securely without needing a public web server setup.
+## How to interact with the bot
+If you are in the Slack workspace where my bot is installed, here is how you can test it:
+1. Go to a channel like `#bot-spam` (or wherever it is added).
+2. Type my custom slash command: `/your-command-here` 
+3. Hit enter! Because the bot is running 24/7 on my Nest container using Socket Mode, it will reply to you instantly.
 
-## How I built it (and the stuff that went wrong)
-This was my first time really diving into a Linux command line, so it was a huge learning curve. I used the `@slack/bolt` framework for the bot's brain.
+## My Coding Journey (and the things I broke)
+I had never really used a Linux server command line before this, so getting it to run permanently was a massive learning experience.
 
-Here are the main challenges I ran into:
-* **The Server Connection:** Getting onto the Nest server in the first place was tricky. I kept getting connection timeouts with the IPv4 address until I figured out how to SSH in using the server's public IPv6 address.
-* **The `package.json` disaster:** When I finally got my code onto the server and tried to run `npm install`, it failed completely. I realized I had totally forgotten to commit and push my `package.json` file! I had to quickly write it up in the GitHub web interface and pull it back down to the server to fix it.
-* **Going 24/7:** To stop the bot from dying the second I closed my terminal window, I had to learn about Linux background processes. I wrote a `systemd` service file (`slackbot.service`) to manage it. Seeing the terminal print `active (running)` for the first time was the best feeling!
+* **Getting into the server:** I spent a long time trying to SSH into my Nest container with the standard IPv4 address, and it kept timing out. I finally figured out I needed to use the public IPv6 address to connect.
+* **The package.json mistake:** After I got into the server and cloned my GitHub repo, I proudly ran `npm install`... and it immediately crashed. I realized I had completely forgotten to upload my `package.json` file to GitHub. I had to create the file directly in the GitHub web UI and run `git pull` on the server to fix it.
+* **Keeping it alive:** Initially, whenever I closed my SSH terminal, the bot would die. I had to research Linux background processes and wrote my very first `systemd` service script (`slackbot.service`). Once I got the `active (running)` status, it stayed online for good.
 
-## Want to run it yourself?
-If you want to clone this and try it, you'll need Node.js installed and your own Slack App tokens from the Slack API dashboard.
-
-1. Clone this repo and run `npm install` (I double-checked that `package.json` is actually there this time!).
-2. Create a `.env` file in the folder and add your tokens like this:
+## Running the code yourself
+If you want to host this on your own machine:
+1. Clone this repository.
+2. Run `npm install` (I made sure the `package.json` is actually there this time!).
+3. Create a `.env` file and add your own Slack App credentials:
    ```env
    SLACK_BOT_TOKEN=xoxb-your-bot-token
    SLACK_APP_TOKEN=xapp-your-app-token
    ```
-3. Run `node index.js`. Once it says "bot is running!", test your slash command in Slack.
+4. Run `node index.js`.
