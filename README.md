@@ -1,27 +1,41 @@
-# My 24/7 Nest Slack Bot 🚀
+# SlackBOT
 
-Hey! I'm Kavish, and this is my Stardance software project. I built a custom Slack bot using Node.js and the `@slack/bolt` library. The main goal for this project was figuring out how to host a bot 24/7 on a Hack Club Nest server so I wouldn't have to leave my personal laptop running all day.
+I created this Slack bot with Node.js and @slack/bolt because I wanted a bot that would respond to messages around the clock, not requiring my laptop to be left opened all the time. To run it continuously, I hosted this bot on my Hack Club Nest server.
 
-## How to interact with the bot
-If you are in the Slack workspace where my bot is installed, here is how you can test it:
-1. Go to a channel like `#bot-spam` (or wherever it is added).
-2. Type my custom slash command: `/your-command-here` 
-3. Hit enter! Because the bot is running 24/7 on my Nest container using Socket Mode, it will reply to you instantly.
+## How to use the bot
 
-## My Coding Journey (and the things I broke)
-I had never really used a Linux server command line before this, so getting it to run permanently was a massive learning experience.
+1. Access the Hack Club Slack and go to the `#bot-spam` channel.
+2. Send a mention to `@SlackBOT` or type `hello`.
+3. Receive a response to your message.
 
-* **Getting into the server:** I spent a long time trying to SSH into my Nest container with the standard IPv4 address, and it kept timing out. I finally figured out I needed to use the public IPv6 address to connect.
-* **The package.json mistake:** After I got into the server and cloned my GitHub repo, I proudly ran `npm install`... and it immediately crashed. I realized I had completely forgotten to upload my `package.json` file to GitHub. I had to create the file directly in the GitHub web UI and run `git pull` on the server to fix it.
-* **Keeping it alive:** Initially, whenever I closed my SSH terminal, the bot would die. I had to research Linux background processes and wrote my very first `systemd` service script (`slackbot.service`). Once I got the `active (running)` status, it stayed online for good.
+## Features
 
-## Running the code yourself
-If you want to host this on your own machine:
-1. Clone this repository.
-2. Run `npm install` (I made sure the `package.json` is actually there this time!).
-3. Create a `.env` file and add your own Slack App credentials:
-   ```env
-   SLACK_BOT_TOKEN=xoxb-your-bot-token
-   SLACK_APP_TOKEN=xapp-your-app-token
-   ```
-4. Run `node index.js`.
+- Communicates via Slack Socket Mode thus no need for an exposed HTTP endpoint is required.
+- Responds automatically to messages sent in the Slack.
+- Operates 24/7 in the background via Ubuntu Linux systemd service.
+
+## How I made it
+
+To begin with, I created a Slack application on the Slack API website, activated Socket Mode, and received my bot token and app token. The code of the bot was written in `index.js` with `@slack/bolt`, while my tokens were stored in `.env` files to prevent their leaking to the GitHub.
+
+Transferring the bot to the Hack Club Nest server was challenging due to the lack of experience in using a Linux terminal. Firstly, I tried to connect via SSH with the local IPv4 address and found out it always times out, so I had to find out how to connect with the IPv6 public address of the server instead.
+
+Upon logging in, I had to install Git and Node.js and clone my repository. After attempting to run `npm install` and receiving the error, I found out that I had forgotten to upload `package.json` to GitHub. Therefore, I uploaded `package.json` via GitHub website and ran `git pull` on the server.
+
+Next, I created `.env` file in the terminal using `nano` and pasted my tokens there.
+
+Running the bot with `node index.js` was working fine; however, once I exited the SSH terminal, the bot was stopping. To solve this problem, I learned how to create a `slackbot.service` file in the `/etc/systemd/system/` directory and start it with `systemctl`.
+
+Now, the server runs the bot 24/7 and restarts it in case of a crash.
+
+## How to run it yourself
+
+1. Clone this repository:
+   `git clone https://github.com/AlDigitalDreamer/SlackBOT.git`
+2. Install the packages:
+   `npm install`
+3. Create a `.env` file in the main folder and add your tokens:
+   `SLACK_BOT_TOKEN=xoxb-your-token`
+   `SLACK_APP_TOKEN=xapp-your-token`
+4. Start the bot:
+   `node
