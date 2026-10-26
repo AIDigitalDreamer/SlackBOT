@@ -5,7 +5,7 @@ I created this Slack bot with Node.js and @slack/bolt because I wanted a bot tha
 ## How to use the bot
 
 1. Access the Hack Club Slack and go to the `#bot-spam` channel.
-2. Send a mention to `@SlackBOT` or type `hello`.
+2. Send a mention to `@CosmicBot` or type `hello`.
 3. Receive a response to your message.
 
 ## Features
