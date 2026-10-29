@@ -1,32 +1,34 @@
 # SlackBOT
 
-I created this Slack bot with Node.js and @slack/bolt because I wanted a bot that would respond to messages around the clock, not requiring my laptop to be left opened all the time. To run it continuously, I hosted this bot on my Hack Club Nest server.
+I made this Slack bot using Node.js, `@slack/bolt`, and `axios` because I wanted a bot that could reply to slash commands 24/7 without me having to keep my laptop open all day. To make it run non-stop, I hosted it on my Hack Club Nest server.
 
 ## How to use the bot
 
-1. Access the Hack Club Slack and go to the `#bot-spam` channel.
-2. Send a mention to `@CosmicBot` or type `hello`.
-3. Receive a response to your message.
+Open the Hack Club Slack (like in `#bot-spam`) and type any of these slash commands:
+
+- `/comsic-help` - Shows the list of available commands
+- `/comsic-ping` - Checks if the bot is online and replies with `Pong!` and the latency in ms
+- `/comsic-catfact` - Fetches and replies with a random cat fact
+- `/comsic-joke` - Fetches and replies with a random joke and punchline
+
+*(Note: Make sure to spell the command prefix `/comsic-` with the "m" before the "s"!)*
 
 ## Features
 
-- Communicates via Slack Socket Mode thus no need for an exposed HTTP endpoint is required.
-- Responds automatically to messages sent in the Slack.
-- Operates 24/7 in the background via Ubuntu Linux systemd service.
+- Connects using Slack Socket Mode so it does not need a public HTTP endpoint.
+- Uses `axios` to fetch live data from the Cat Fact API (`catfact.ninja`) and the Official Joke API.
+- Calculates live response latency with `/comsic-ping`.
+- Runs 24/7 in the background on Ubuntu using a Linux `systemd` service.
 
 ## How I made it
 
-To begin with, I created a Slack application on the Slack API website, activated Socket Mode, and received my bot token and app token. The code of the bot was written in `index.js` with `@slack/bolt`, while my tokens were stored in `.env` files to prevent their leaking to the GitHub.
+I started by setting up a Slack app on the Slack API website, turning on Socket Mode, creating the slash commands, and getting my bot and app tokens. I wrote the bot code in `index.js` using `@slack/bolt` and `axios`, and kept my tokens safe inside a `.env` file so they wouldn't get leaked on GitHub.
 
-Transferring the bot to the Hack Club Nest server was challenging due to the lack of experience in using a Linux terminal. Firstly, I tried to connect via SSH with the local IPv4 address and found out it always times out, so I had to find out how to connect with the IPv6 public address of the server instead.
+Moving the bot to the Hack Club Nest server took a lot of trial and error since I was new to using a Linux terminal. At first I tried connecting through SSH with the local IPv4 address and it kept timing out, so I had to figure out how to connect using the server's public IPv6 address instead.
 
-Upon logging in, I had to install Git and Node.js and clone my repository. After attempting to run `npm install` and receiving the error, I found out that I had forgotten to upload `package.json` to GitHub. Therefore, I uploaded `package.json` via GitHub website and ran `git pull` on the server.
+Once I logged into the server, I installed Git and Node.js and cloned my repo. When I tried running `npm install`, it gave me an error because I forgot to upload my `package.json` file to GitHub. I went back to the GitHub website, added `package.json` manually, and ran `git pull` on the server to fix it. Then I used `nano` in the terminal to create my `.env` file and paste my tokens in.
 
-Next, I created `.env` file in the terminal using `nano` and pasted my tokens there.
-
-Running the bot with `node index.js` was working fine; however, once I exited the SSH terminal, the bot was stopping. To solve this problem, I learned how to create a `slackbot.service` file in the `/etc/systemd/system/` directory and start it with `systemctl`.
-
-Now, the server runs the bot 24/7 and restarts it in case of a crash.
+At first I ran the bot with `node index.js`, which worked, but the bot turned off whenever I closed my SSH window. To fix that, I learned how to make a `slackbot.service` file in `/etc/systemd/system/` and started it with `systemctl`. Now the server keeps the bot running in the background 24/7 and restarts it automatically if it ever crashes.
 
 ## How to run it yourself
 
@@ -38,4 +40,4 @@ Now, the server runs the bot 24/7 and restarts it in case of a crash.
    `SLACK_BOT_TOKEN=xoxb-your-token`
    `SLACK_APP_TOKEN=xapp-your-token`
 4. Start the bot:
-   `node
+   `node index.js`
